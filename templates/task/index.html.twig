@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Task index{% endblock %}
+
+{% block body %}
+<div class="jumbotron">
+  <h1 class="display-4">Events</h1>
+  <code id="code" class="lead"></code>
+  <hr class="my-4">
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>CreatedAt</th>
+            <th>UpdatedAt</th>
+            <th>actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for task in tasks %}
+        <tr>
+            <td>{{ task.id }}</td>
+            <td>{{ task.title }}</td>
+            <td>{{ task.description }}</td>
+            <td>{{ task.createdAt ? task.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+            <td>{{ task.updatedAt ? task.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+            <td>
+                <a href="{{ path('task_show', {'id': task.id}) }}">show</a>
+                <a href="{{ path('task_edit', {'id': task.id}) }}">edit</a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="6">no records found</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{{ path('task_new') }}">Create new</a>
+{% endblock %}
+{% block scripts %}
+<script>
+    var webSocket = WS.connect("ws://127.0.0.1:8080");
+
+    webSocket.on("socket/connect", function (session) {
+        console.log("Successfully Connected!");
+        
+        session.subscribe("model/Task", function(uri, payload){
+            $("#code").text(JSON.stringify(payload))
+        });
+        
+    })
+
+    webSocket.on("socket/disconnect", function (error) {
+        console.log("Disconnected for " + error.reason + " with code " + error.code);
+    })
+</script>
+{% endblock scripts %}

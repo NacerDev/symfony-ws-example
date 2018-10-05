@@ -1,0 +1,17 @@
+# Web Socket Configuration
+gos_web_socket:
+    server:
+        port: '%env(WEB_SOCKET_SERVER_PORT)%'       #The port the socket server will listen on
+        host: '%env(WEB_SOCKET_SERVER_HOST)%'   #The host ip to bind to
+        router:
+            resources: 
+               - Topic/pubsub.yml
+    topics:
+       - 'App\Topic\TopicModel'
+    client:
+        firewall: main
+        session_handler: ~
+    pushers:
+        wamp:
+            host: '%env(WEB_SOCKET_PUSHER_HOST)%'
+            port: '%env(WEB_SOCKET_PUSHER_PORT)%'

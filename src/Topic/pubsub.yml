@@ -1,0 +1,4 @@
+topic_model:
+    channel: model/{model}
+    handler:
+        callback: 'topic.model'
